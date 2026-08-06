@@ -1,65 +1,338 @@
-# GraphHopper Maps
+# HerStreet
 
-A route planner user interface for the [GraphHopper routing engine](https://github.com/graphhopper/graphhopper) released under the Apache License 2.0.
+> Know how a place feels before you get there.
 
-[Try it out](https://graphhopper.com/maps/)!
+HerStreet is a community-powered urban comfort mapping platform designed to help women make more informed everyday travel decisions.
 
-We have developed an intuitive and simple user interface to find routes:
+Unlike traditional navigation applications that primarily recommend the fastest route, HerStreet aims to compare walking routes using practical factors such as lighting, street activity, transport access, pavement conditions, nearby essential services, and the freshness of community reports.
 
-[![GraphHopper Maps route planner](https://www.graphhopper.com/wp-content/uploads/2026/03/maps-screenshot.png)](https://graphhopper.com/maps/)
+## Project Status
 
-With address search (autocomplete), alternative routes, information along the route and POI search and everything available in all major browsers including mobile browsers. Read more details about it [here](https://www.graphhopper.com/maps-route-planner/).
+HerStreet is currently under development.
 
-## Turn-by-Turn navigation
+The first version is being designed as a small neighbourhood pilot. It will cover residential streets and nearby locations such as transport connections, healthcare facilities, petrol stations, places of worship, shops, and other frequently visited public places.
 
-You can download this bundled as an app for Android [on fdroid](https://f-droid.org/de/packages/com.graphhopper.maps/),
-where also a turn-by-turn navigation is implemented via Maplibre Navigation SDK
-using a capacitor plugin. Read more about it in [this repository](https://github.com/boldtrn/graphhopper-maps-capacitor/).
+The pilot area will remain approximate to protect the creator’s private location.
 
-There was [an experimental `navi` branch](https://github.com/graphhopper/graphhopper-maps/tree/navi) that implements turn-by-turn navigation
-[directly in the browser](https://navi.graphhopper.org).
+## The Problem
 
-## Start development:
+Traditional navigation applications can answer:
 
- * Clone this repository.
- * Make sure node and npm are installed. We recommend using the iron LTS (node v24.12.0 and npm v11.6.2).
- * npm install
- * npm run serve
- * Open your browser at http://0.0.0.0:3000/.
- * Start development. The browser will update automatically when you change the code.
- * Format the code and run the tests using `npm run format` and `npm run test`.
- * Fork the repository and create a pull request. Contributions are welcome. Feel free to discuss your changes in our
-   [forum](https://discuss.graphhopper.com/) or the GitHub [issues](https://github.com/graphhopper/graphhopper-maps/issues).
- * You can build the production bundle using `npm run build`.
- * If you use the Directions API edit the config to show profile icons properly (see 'Advanced configuration' section below).
+- How long will a journey take?
+- What is the shortest route?
+- Where is the nearest shop or hospital?
 
-## Help with translations:
+However, they usually cannot answer:
 
-GraphHopper Maps is translated into many languages and you can help improve GraphHopper by adding or improving your language! See [this spreadsheet](https://docs.google.com/spreadsheets/d/18z00Rbt6QvLIkayEV9P89vW9oU0QbTVsjRk9nz1CeFY/edit#gid=0)
-to create a new or improve an existing language. Let us know if you changed something or submit a pull request with your changes after the following steps:
+- Is this street well lit in the evening?
+- Does the area remain active at night?
+- Are shops currently open along the route?
+- Is public transport easily available?
+- Is the pavement suitable for walking?
+- Is the available information recent and reliable?
 
- * Edit the spreadsheet
- * Run `python update-translations.py`
- * Review your changes via e.g. http://localhost:3000/?locale=en and with `git diff`. Make sure that is the only one with `git status`.
- 
-Please note that the translations for the server-side turn instructions are located in [a different repository](https://github.com/graphhopper/graphhopper/blob/master/docs/core/translations.md).
+HerStreet aims to make this practical local knowledge visible.
 
-## Advanced configuration
+## Core Idea
 
-You can point the app to a different url, like a [local GraphHopper server](https://github.com/graphhopper/graphhopper), 
-set your own API keys for the different map tile providers and more in the [config.js](./config.js) file. For such changes it is
-best to create a copy of this file called `config-local.js` which will be ignored by git.
+A user selects a destination, travel time, and personal comfort preferences. HerStreet then compares alternative walking routes.
 
-## Further Notes
+Possible route options may include:
 
-Every branch of this repository can be tested at https://graphhopper.com/maps-dev/<branch_name>/
+- Fastest route
+- More comfortable route
+- Most recently documented route
 
-## Powered By
+Each recommendation will include both a comfort score and a data-confidence level.
 
-This project uses
+Example:
 
- * the great [OpenLayers library](https://openlayers.org/).
- * the [codemirror](https://codemirror.net/) code editor for the custom model editor.
- * many icons from Google's [open source font library](https://fonts.google.com/icons).
- * many more open source projects - see the package.json
+- Comfort score: 82/100
+- Data confidence: Medium
+- Reason: Better lighting reports, active shops, and nearby transport access
+- Latest community verification: Four days ago
 
+HerStreet provides information, not a guarantee of personal safety.
+
+## Initial Report Categories
+
+### 1. Lighting and Visibility
+
+- Well lit
+- Partially lit
+- Poorly lit
+- Clear visibility
+- Obstructed visibility
+
+### 2. Street Activity
+
+- Busy
+- Moderately active
+- Quiet
+- Isolated
+- Shops or facilities currently open
+
+### 3. Transport Access
+
+- Airport access
+- Bus availability
+- Taxi or auto availability
+- Pickup and drop-off points
+- Walkable transport connections
+
+### 4. Essential Help Nearby
+
+- Hospital or clinic
+- Pharmacy
+- Staffed petrol station
+- Police or emergency facility
+
+### 5. Public and Community Places
+
+- Place of worship
+- Park
+- Public toilet
+- Seating or waiting area
+- Drinking water
+
+### 6. Walking Conditions
+
+- Good pavement
+- Broken or missing pavement
+- Difficult road crossing
+- Heavy traffic
+- Construction or obstruction
+- Stroller or wheelchair suitability
+
+## Planned MVP
+
+The first working version of HerStreet will allow users to:
+
+1. View an interactive map
+2. Search for a location
+3. Select a travel time
+4. Submit a condition report at a map location
+5. View recent community reports
+6. Filter reports by category
+7. View a comfort heat map
+8. Compare alternative walking routes
+9. See comfort and confidence scores
+10. Read an explanation of why a route was recommended
+
+## Planned Comfort Model
+
+HerStreet will initially use a transparent, rule-based scoring model rather than an unexplained machine-learning prediction.
+
+A report’s influence may depend on:
+
+- Report recency
+- Community agreement
+- Contributor reliability
+- Available supporting evidence
+- Time of day
+- Number of reports in the area
+
+Older reports will gradually lose influence so that outdated observations do not permanently define a location.
+
+The application will keep these values separate:
+
+- **Comfort score:** What recent observations suggest about the route
+- **Confidence score:** How much reliable data is available
+
+## Planned AI and Data Science
+
+Future development may include:
+
+- Community-report classification
+- Duplicate-report detection
+- Suspicious-report detection
+- Street-image analysis
+- Geospatial clustering
+- Time-series analysis
+- Report-confidence modelling
+- Route scoring
+- AI-generated route explanations
+- Summaries of recent local conditions
+
+AI-generated explanations must be grounded in available reports and geographic data. The system must not invent safety information.
+
+## Privacy and Responsible Design
+
+HerStreet is intended to support informed decisions while respecting user privacy.
+
+The project will follow these principles:
+
+- Never display a user’s live location publicly
+- Avoid storing unnecessary movement history
+- Keep the pilot location approximate
+- Remove identifying metadata from uploaded photographs
+- Provide controls for deleting user reports
+- Moderate harassment and reports targeting individuals
+- Describe observable conditions rather than labelling neighbourhoods
+- Clearly communicate missing or outdated information
+- Never guarantee that a route is safe
+- Avoid crime prediction and profiling
+
+## Technology
+
+### Current Foundation
+
+- React
+- TypeScript
+- OpenLayers
+- Webpack
+- GraphHopper routing integration
+- OpenStreetMap-based geographic data
+
+### Planned Components
+
+- Python and FastAPI
+- PostgreSQL with PostGIS
+- Supabase authentication and storage
+- GeoPandas
+- scikit-learn
+- AI-assisted text and image analysis
+
+## Local Development
+
+### Requirements
+
+- Node.js 24 recommended
+- npm
+- Git
+- A modern web browser
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Divyanshi88/HERSTREETS.git
+```
+
+Enter the project directory:
+
+```bash
+cd HERSTREETS
+```
+
+Install the dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run serve
+```
+
+Open the application:
+
+```text
+http://localhost:3000
+```
+
+### Available Commands
+
+Run the development server:
+
+```bash
+npm run serve
+```
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+Run the tests:
+
+```bash
+npm run test
+```
+
+Format the project:
+
+```bash
+npm run format
+```
+
+## Development Roadmap
+
+### Phase 1 — Product Definition
+
+- [x] Select a neighbourhood pilot
+- [x] Define initial reporting categories
+- [x] Establish the GitHub repository
+- [x] Run the original map application
+- [ ] Create interface wireframes
+- [ ] Finalize the MVP requirements
+
+### Phase 2 — Foundation
+
+- [ ] Introduce HerStreet branding
+- [ ] Simplify the existing route-planning interface
+- [ ] Configure the pilot map area
+- [ ] Design the database
+- [ ] Add authentication
+
+### Phase 3 — Community Reporting
+
+- [ ] Create the report-submission flow
+- [ ] Display reports on the map
+- [ ] Add category and time filters
+- [ ] Add report confirmation
+- [ ] Add moderation controls
+
+### Phase 4 — Route Intelligence
+
+- [ ] Request alternative walking routes
+- [ ] Divide routes into geographic segments
+- [ ] Match reports to route segments
+- [ ] Calculate comfort scores
+- [ ] Calculate confidence levels
+- [ ] Explain route differences
+
+### Phase 5 — AI and Data Science
+
+- [ ] Classify report text
+- [ ] Detect duplicate reports
+- [ ] Analyze report reliability
+- [ ] Generate grounded route explanations
+- [ ] Evaluate model accuracy and fairness
+
+### Phase 6 — Testing and Release
+
+- [ ] Conduct privacy testing
+- [ ] Test mobile responsiveness
+- [ ] Test low-data areas
+- [ ] Test contradictory and outdated reports
+- [ ] Conduct user testing
+- [ ] Deploy the pilot application
+
+## Open-Source Foundation
+
+HerStreet is currently based on [GraphHopper Maps](https://github.com/graphhopper/graphhopper-maps), an open-source route-planning interface developed by the GraphHopper team.
+
+GraphHopper Maps provides the initial mapping, search, route visualization, and navigation foundation. HerStreet’s community-reporting system, comfort model, time-aware analysis, confidence calculation, responsible-design framework, and women-centered experience are being developed as original project features.
+
+GraphHopper Maps is distributed under the Apache License 2.0.
+
+## Data Attribution
+
+Map and routing data may include information contributed by the OpenStreetMap community. Appropriate OpenStreetMap and routing-provider attribution must remain visible in the application.
+
+## Licence
+
+This project retains the Apache License 2.0 from its GraphHopper Maps foundation. See `LICENSE.txt` for the complete licence text.
+
+## Disclaimer
+
+HerStreet is an informational community platform. Comfort scores and route explanations may be incomplete, outdated, or inaccurate. They are not guarantees of safety and should not replace personal judgment, official travel guidance, or emergency services.
+
+## Creator
+
+Created by [Divyanshi](https://github.com/Divyanshi88) as an AI, data-science, and full-stack web-development project focused on improving everyday urban experiences for women.
