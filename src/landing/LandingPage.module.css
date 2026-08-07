@@ -1,0 +1,376 @@
+.page {
+    min-height: 100%;
+    width: 100%;
+    background: linear-gradient(135deg, #fff8f1 0%, #fbe9ef 100%);
+    color: #341627;
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+}
+
+.shell {
+    width: min(100%, 1440px);
+    margin: 0 auto;
+    padding: 1.6rem 2rem 3rem;
+    min-height: 100%;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.25rem 0 1.5rem;
+}
+
+.brandBlock {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.brandMark {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: #ef5b8c;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.brandName {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.brandTag {
+    margin: 0.1rem 0 0;
+    font-size: 0.8rem;
+    color: #7a4a63;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+}
+
+.nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navButton,
+.primaryButton,
+.compareButton {
+    border: 1px solid rgba(95, 38, 68, 0.2);
+    border-radius: 999px;
+    padding: 0.78rem 1rem;
+    font: inherit;
+    background: transparent;
+    color: #341627;
+    cursor: pointer;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    font-weight: 600;
+}
+
+.primaryButton,
+.compareButton {
+    background: #ef5b8c;
+    color: white;
+    border-color: #ef5b8c;
+}
+
+.heroGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2.5rem;
+    align-items: center;
+    padding: 2.25rem 0 2.75rem;
+}
+
+.content {
+    max-width: 620px;
+}
+
+.eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.24em;
+    font-weight: 700;
+    color: #8f4f69;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.headline {
+    margin: 0;
+    font-size: clamp(2.7rem, 4.4vw, 4.65rem);
+    line-height: 0.96;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: #2c1524;
+    max-width: 10ch;
+}
+
+.highlight {
+    font-style: italic;
+    font-weight: 700;
+    color: #bb3e6b;
+}
+
+.description {
+    margin: 1rem 0 1.5rem;
+    max-width: 620px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: #5e4350;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.searchCard {
+    background: rgba(255, 255, 255, 0.82);
+    border: 1px solid rgba(95, 38, 68, 0.15);
+    border-radius: 1.5rem;
+    box-shadow: 0 18px 50px rgba(92, 34, 56, 0.12);
+    padding: 1rem;
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.2rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    color: #5f2644;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+.field input {
+    border: 1px solid rgba(95, 38, 68, 0.2);
+    border-radius: 0.95rem;
+    padding: 0.9rem 1rem;
+    font-size: 1rem;
+    background: #fffdf9;
+    color: #341627;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.field input:focus {
+    outline: 2px solid rgba(239, 91, 140, 0.24);
+    border-color: #ef5b8c;
+}
+
+.errorText {
+    margin: 0;
+    color: #a6354f;
+    font-weight: 600;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+.privacyNote {
+    margin: 1rem 0 0;
+    color: #714a5d;
+    font-size: 0.95rem;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+}
+
+.previewPanel {
+    display: flex;
+    justify-content: center;
+}
+
+.previewCard {
+    width: min(100%, 520px);
+    background: linear-gradient(180deg, #fff9f4 0%, #f7e6ee 100%);
+    border: 1px solid rgba(95, 38, 68, 0.16);
+    border-radius: 1.75rem;
+    padding: 1.2rem 1.25rem 1.3rem;
+    box-shadow: 0 20px 45px rgba(95, 38, 68, 0.12);
+}
+
+.previewHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 0.75rem;
+}
+
+.previewLabel {
+    margin: 0 0 0.35rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8f4f69;
+}
+
+.previewTitle {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #341627;
+}
+
+.previewBadge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0.4rem 0.65rem;
+    background: #f7d7e4;
+    color: #8f4f69;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.routeRow {
+    margin-top: 1rem;
+    display: grid;
+    gap: 0.55rem;
+}
+
+.routeLine,
+.routeLineSecondary {
+    height: 0.75rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #ef5b8c 0%, #9e314f 100%);
+}
+
+.routeLineSecondary {
+    background: linear-gradient(90deg, rgba(95, 38, 68, 0.2) 0%, rgba(239, 91, 140, 0.25) 100%);
+    opacity: 0.85;
+}
+
+.previewStats {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.statTitle {
+    margin: 0 0 0.25rem;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8f4f69;
+}
+
+.statValue {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #341627;
+}
+
+.chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.chip {
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid rgba(95, 38, 68, 0.16);
+    padding: 0.45rem 0.65rem;
+    font-size: 0.9rem;
+    color: #5f2644;
+}
+
+.preferenceSection {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.preferenceCard {
+    background: rgba(255, 249, 244, 0.95);
+    border: 1px solid rgba(95, 38, 68, 0.14);
+    border-radius: 1.2rem;
+    padding: 1rem 1.1rem;
+}
+
+.preferenceCard h2 {
+    margin: 0 0 0.8rem;
+    font-size: 1.1rem;
+    color: #341627;
+}
+
+.preferenceCard p {
+    margin: 0;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    color: #59404c;
+    line-height: 1.6;
+}
+
+.preferenceGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    color: #5f2644;
+}
+
+.preferenceGrid > div {
+    background: white;
+    border-radius: 0.9rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(95, 38, 68, 0.1);
+}
+
+@media (max-width: 1180px) {
+    .heroGrid {
+        grid-template-columns: 1fr;
+        gap: 1.4rem;
+    }
+
+    .content {
+        max-width: none;
+    }
+
+    .previewPanel {
+        justify-content: flex-start;
+    }
+
+    .preferenceSection {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .shell {
+        padding: 1rem 1rem 2rem;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .headline {
+        font-size: clamp(2.2rem, 7vw, 3rem);
+        max-width: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .preferenceSection,
+    .preferenceGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .searchCard {
+        padding: 0.9rem;
+    }
+}

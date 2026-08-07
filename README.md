@@ -193,6 +193,10 @@ The project will follow these principles:
 - scikit-learn
 - AI-assisted text and image analysis
 
+## Design direction
+
+Phase 1 uses a warm editorial visual language inspired by the HerStreet brief: a soft ivory base, blush surfaces, vivid pink accents, and deep plum text. Typography uses Cormorant Garamond for expressive headlines and Inter for the humanist UI, keeping the experience polished and accessible without relying on decorative script for body copy.
+
 ## Local Development
 
 ### Requirements

@@ -1,15 +1,17 @@
 .appWrapper {
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     padding: 0;
     margin: 0;
-    display: grid;
-    grid-template-columns: 26rem 1fr auto;
-    grid-template-rows: 100%;
-    justify-content: space-between;
+    display: block;
     overflow: auto;
     -webkit-user-select: none;
     user-select: none; /* firefox does not ignore -webkit-user-select so make this explicit, see #217 */
+}
+
+.appWrapper :global(.landingViewport) {
+    width: 100%;
+    min-height: 100%;
 }
 
 .map {
@@ -209,8 +211,7 @@
 
 @media (max-width: 44rem) {
     .appWrapper {
-        grid-template-columns: 100%;
-        grid-template-rows: auto 0 1fr auto;
+        display: block;
     }
 }
 
@@ -234,6 +235,21 @@
 @font-face {
     font-family: 'Roboto Condensed';
     src: url(./fonts/RobotoCondensed-Regular.ttf) format('truetype');
+}
+
+.returnLandingButton {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 4;
+    border: 1px solid rgba(95, 38, 68, 0.18);
+    border-radius: 999px;
+    background: rgba(255, 248, 241, 0.95);
+    color: #341627;
+    padding: 0.6rem 0.85rem;
+    cursor: pointer;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-shadow: 0 10px 20px rgba(37, 20, 29, 0.08);
 }
 
 .sidebarCloseButton {

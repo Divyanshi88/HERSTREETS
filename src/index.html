@@ -28,7 +28,13 @@
         <link rel="manifest" href="./manifest.json" />
         <!-- config.js is not included in bundle.js -->
         <script src="config.js"></script>
-        <title>GraphHopper Maps | Route Planner</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <title>HerStreet | A more thoughtful way home</title>
         <style>
             html,
             body {
@@ -40,8 +46,18 @@
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
 
+            html {
+                min-height: 100%;
+            }
+
             body {
                 min-height: 100%;
+                overflow-x: hidden;
+            }
+
+            #root {
+                min-height: 100%;
+                width: 100%;
             }
 
             @media (min-resolution: 2dppx) and (min-height: 700px) {

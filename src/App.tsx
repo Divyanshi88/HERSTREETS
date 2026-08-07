@@ -51,6 +51,7 @@ import LocationButton from '@/map/LocationButton'
 import { SettingsContext } from '@/contexts/SettingsContext'
 import usePOIsLayer from '@/layers/UsePOIsLayer'
 import useCurrentLocationLayer from '@/layers/UseCurrentLocationLayer'
+import LandingPage from '@/landing/LandingPage'
 
 export const POPUP_CONTAINER_ID = 'popup-container'
 export const SIDEBAR_CONTENT_ID = 'sidebar-content'
@@ -66,6 +67,7 @@ export default function App() {
     const [mapFeatures, setMapFeatures] = useState(getMapFeatureStore().state)
     const [pois, setPOIs] = useState(getPOIsStore().state)
     const [currentLocation, setCurrentLocation] = useState(getCurrentLocationStore().state)
+    const [showLanding, setShowLanding] = useState(true)
 
     const map = getMap()
 
@@ -137,48 +139,59 @@ export default function App() {
     return (
         <SettingsContext.Provider value={settings}>
             <div className={styles.appWrapper}>
-                <MapPopups
-                    map={map}
-                    pathDetails={pathDetails}
-                    mapFeatures={mapFeatures}
-                    poiState={pois}
-                    query={query}
-                />
-                <ContextMenu map={map} route={route} queryPoints={query.queryPoints} />
-                {isSmallScreen ? (
-                    <SmallScreenLayout
-                        query={query}
-                        route={route}
-                        map={map}
-                        mapOptions={mapOptions}
-                        error={error}
-                        encodedValues={info.encoded_values}
-                        drawAreas={settings.drawAreasEnabled}
-                        currentLocation={currentLocation}
-                        pathDisplayMode={pathDisplayMode}
-                        onCyclePathDisplay={() =>
-                            setPathDisplayMode(m =>
-                                m === 'normal' ? 'incline' : m === 'incline' ? 'hidden' : 'normal',
-                            )
-                        }
-                    />
+                {showLanding ? (
+                    <div className="landingViewport">
+                        <LandingPage onEnterMap={() => setShowLanding(false)} />
+                    </div>
                 ) : (
-                    <LargeScreenLayout
-                        query={query}
-                        route={route}
-                        map={map}
-                        mapOptions={mapOptions}
-                        error={error}
-                        encodedValues={info.encoded_values}
-                        drawAreas={settings.drawAreasEnabled}
-                        currentLocation={currentLocation}
-                        pathDisplayMode={pathDisplayMode}
-                        onCyclePathDisplay={() =>
-                            setPathDisplayMode(m =>
-                                m === 'normal' ? 'incline' : m === 'incline' ? 'hidden' : 'normal',
-                            )
-                        }
-                    />
+                    <>
+                        <button type="button" className={styles.returnLandingButton} onClick={() => setShowLanding(true)}>
+                            ← Back to landing
+                        </button>
+                        <MapPopups
+                            map={map}
+                            pathDetails={pathDetails}
+                            mapFeatures={mapFeatures}
+                            poiState={pois}
+                            query={query}
+                        />
+                        <ContextMenu map={map} route={route} queryPoints={query.queryPoints} />
+                        {isSmallScreen ? (
+                            <SmallScreenLayout
+                                query={query}
+                                route={route}
+                                map={map}
+                                mapOptions={mapOptions}
+                                error={error}
+                                encodedValues={info.encoded_values}
+                                drawAreas={settings.drawAreasEnabled}
+                                currentLocation={currentLocation}
+                                pathDisplayMode={pathDisplayMode}
+                                onCyclePathDisplay={() =>
+                                    setPathDisplayMode(m =>
+                                        m === 'normal' ? 'incline' : m === 'incline' ? 'hidden' : 'normal',
+                                    )
+                                }
+                            />
+                        ) : (
+                            <LargeScreenLayout
+                                query={query}
+                                route={route}
+                                map={map}
+                                mapOptions={mapOptions}
+                                error={error}
+                                encodedValues={info.encoded_values}
+                                drawAreas={settings.drawAreasEnabled}
+                                currentLocation={currentLocation}
+                                pathDisplayMode={pathDisplayMode}
+                                onCyclePathDisplay={() =>
+                                    setPathDisplayMode(m =>
+                                        m === 'normal' ? 'incline' : m === 'incline' ? 'hidden' : 'normal',
+                                    )
+                                }
+                            />
+                        )}
+                    </>
                 )}
             </div>
         </SettingsContext.Provider>
