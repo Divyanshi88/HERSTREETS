@@ -8,7 +8,7 @@ Unlike traditional navigation applications that primarily recommend the fastest 
 
 ## Project Status
 
-HerStreet is currently under development.
+HerStreet is currently under development. Phase 1 establishes the branded, responsive landing experience and preserves the existing GraphHopper/OpenLayers routing flow. Community reporting and comfort scoring remain future phases.
 
 The first version is being designed as a small neighbourhood pilot. It will cover residential streets and nearby locations such as transport connections, healthcare facilities, petrol stations, places of worship, shops, and other frequently visited public places.
 
@@ -183,15 +183,19 @@ The project will follow these principles:
 - Webpack
 - GraphHopper routing integration
 - OpenStreetMap-based geographic data
+- Responsive HerStreet landing experience
+- Landing-to-map search integration
 
 ### Planned Components
 
-- Python and FastAPI
 - PostgreSQL with PostGIS
 - Supabase authentication and storage
+- Versioned database migrations and row-level security
 - GeoPandas
 - scikit-learn
 - AI-assisted text and image analysis
+
+Python services will be introduced only when a later data-science feature requires them; they are not part of Phase 1.
 
 ## Design direction
 
@@ -238,6 +242,18 @@ Open the application:
 http://localhost:3000
 ```
 
+### Supabase configuration (Phase 2)
+
+Phase 1 continues to work when Supabase is not configured. To enable community features:
+
+1. Create a Supabase project.
+2. Copy `config.js` to `config-local.js`.
+3. Add the project's public URL and publishable/anon key to the `supabase` object in `config-local.js`.
+
+The current HerStreet Supabase project already owns the reports, category, confirmation, photo, and moderation schema. Do not run a second observations schema on that project. The web app submits through `submit_report` and reads public-safe data through `get_public_reports`.
+
+Only use the public anon key in browser configuration. Never add the Supabase service-role key to this repository or to frontend code.
+
 ### Available Commands
 
 Run the development server:
@@ -272,26 +288,31 @@ npm run format
 - [x] Define initial reporting categories
 - [x] Establish the GitHub repository
 - [x] Run the original map application
-- [ ] Create interface wireframes
-- [ ] Finalize the MVP requirements
+- [x] Create interface wireframes
+- [x] Finalize the MVP requirements
 
-### Phase 2 — Foundation
+### Phase 1 — Branded Routing Foundation
 
-- [ ] Introduce HerStreet branding
-- [ ] Simplify the existing route-planning interface
-- [ ] Configure the pilot map area
-- [ ] Design the database
-- [ ] Add authentication
+- [x] Introduce HerStreet branding
+- [x] Add a responsive landing page
+- [x] Connect landing search to the existing routing state
+- [x] Preserve GraphHopper and OpenLayers map behavior
+- [x] Add honest example-data and privacy messaging
+- [x] Add accessibility and metadata improvements
 
-### Phase 3 — Community Reporting
+### Phase 2 — Community Reporting
 
+- [x] Connect to the existing versioned reports database schema
+- [x] Add the optional Supabase client foundation
+- [x] Add privacy rounding and row-level security policies
+- [ ] Add authentication screens
 - [ ] Create the report-submission flow
 - [ ] Display reports on the map
 - [ ] Add category and time filters
 - [ ] Add report confirmation
 - [ ] Add moderation controls
 
-### Phase 4 — Route Intelligence
+### Phase 3 — Route Intelligence
 
 - [ ] Request alternative walking routes
 - [ ] Divide routes into geographic segments
@@ -300,7 +321,7 @@ npm run format
 - [ ] Calculate confidence levels
 - [ ] Explain route differences
 
-### Phase 5 — AI and Data Science
+### Phase 4 — AI and Data Science
 
 - [ ] Classify report text
 - [ ] Detect duplicate reports
@@ -308,7 +329,7 @@ npm run format
 - [ ] Generate grounded route explanations
 - [ ] Evaluate model accuracy and fairness
 
-### Phase 6 — Testing and Release
+### Phase 5 — Testing and Release
 
 - [ ] Conduct privacy testing
 - [ ] Test mobile responsiveness

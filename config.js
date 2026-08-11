@@ -8,6 +8,12 @@ const config = {
     geocodingApi: 'https://graphhopper.com/api/1/',
     // the tile layer used by default, see MapOptionsStore.ts for all options
     defaultTiles: 'OpenStreetMap',
+    // Public Supabase browser credentials. Keep the service-role key out of this file.
+    // Copy config.js to config-local.js and fill these values for local development.
+    supabase: {
+        url: 'https://piygrytamddojgbcnyiq.supabase.co',
+        anonKey: '',
+    },
     // various api keys used for the GH backend and the different tile providers
     keys: {
         graphhopper: 'efc33bcc-a9e6-450b-9221-c52c5bf57de3',

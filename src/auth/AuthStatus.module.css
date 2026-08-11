@@ -1,0 +1,51 @@
+.account {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 17rem;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid rgba(117, 48, 73, 0.22);
+    border-radius: 999px;
+    color: #573044;
+    background: rgba(255, 253, 249, 0.82);
+    font:
+        600 0.72rem 'Inter',
+        sans-serif;
+}
+
+.dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #79a66e;
+    box-shadow: 0 0 0 3px rgba(121, 166, 110, 0.14);
+}
+
+.email {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.account button {
+    flex: 0 0 auto;
+    padding: 0;
+    border: 0;
+    color: #b03c63;
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+}
+
+.account button:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+@media (max-width: 760px) {
+    .account {
+        max-width: 100%;
+    }
+}

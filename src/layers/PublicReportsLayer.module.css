@@ -1,0 +1,265 @@
+.popup {
+    width: min(17rem, calc(100vw - 2rem));
+    margin-bottom: 0.8rem;
+    padding: 1rem;
+    border: 1px solid #e8a4b8;
+    border-radius: 1rem;
+    background: #fffaf7;
+    box-shadow: 0 0.6rem 1.8rem rgba(67, 25, 41, 0.22);
+    color: #3d1828;
+}
+
+.popup::after {
+    position: absolute;
+    bottom: 0.35rem;
+    left: 50%;
+    width: 0.75rem;
+    height: 0.75rem;
+    transform: translateX(-50%) rotate(45deg);
+    border-right: 1px solid #e8a4b8;
+    border-bottom: 1px solid #e8a4b8;
+    background: #fffaf7;
+    content: '';
+}
+
+.kicker {
+    margin: 0 0 0.3rem;
+    color: #b6365c;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.popup h3 {
+    margin: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.25rem;
+}
+
+.location,
+.comment,
+.meta,
+.privacy {
+    margin: 0.5rem 0 0;
+    line-height: 1.4;
+}
+
+.location {
+    font-weight: 600;
+}
+
+.comment {
+    color: #61404d;
+}
+
+.meta,
+.privacy {
+    color: #856774;
+    font-size: 0.75rem;
+}
+
+.close {
+    float: right;
+    border: 0;
+    background: transparent;
+    color: #6c4352;
+    cursor: pointer;
+    font-size: 1.15rem;
+}
+
+.observationControl {
+    top: 0.75rem;
+    left: calc(26rem + 0.75rem);
+    padding: 0;
+    border-radius: 0.85rem;
+    background: transparent;
+    box-shadow: 0 0.5rem 1.25rem rgba(61, 24, 40, 0.15);
+}
+
+.observationControl:hover {
+    background: transparent;
+}
+
+.filterCard {
+    box-sizing: border-box;
+    width: 17.5rem;
+    overflow: hidden;
+    border: 1px solid #e8a4b8;
+    border-radius: 0.85rem;
+    background: #fffaf7;
+    color: #3d1828;
+    font: inherit;
+}
+
+.summaryRow {
+    display: flex;
+    align-items: center;
+    padding: 0.62rem 0.7rem 0.48rem;
+}
+
+.filterCard button:focus-visible,
+.filterCard select:focus-visible {
+    outline: 3px solid rgba(239, 84, 124, 0.35);
+    outline-offset: 2px;
+}
+
+.motif {
+    display: grid;
+    flex: 0 0 2.35rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    place-items: center;
+    margin-right: 0.65rem;
+    border: 1px solid #f0bac9;
+    border-radius: 50%;
+    background: #fff0f3;
+    color: #d8426d;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+.countLabel {
+    min-width: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    line-height: 1.12;
+}
+
+.filterToggle {
+    display: flex;
+    width: 100%;
+    min-height: 2.3rem;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0.46rem 0.75rem;
+    border: 0;
+    border-top: 1px solid #f2ccd7;
+    border-bottom: 1px solid #f2ccd7;
+    border-radius: 0;
+    background: #fff4f6;
+    color: #9d2d50;
+    cursor: pointer;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.filterToggle:hover {
+    background: #ffecef;
+}
+
+.filterFields {
+    display: grid;
+    gap: 0.65rem;
+    padding: 0.75rem;
+}
+
+.filterFields label {
+    display: grid;
+    gap: 0.3rem;
+    color: #6d4555;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.filterFields select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 2.45rem;
+    padding: 0 2rem 0 0.65rem;
+    border: 1px solid #e8a4b8;
+    border-radius: 0.45rem;
+    background: #fffdfb;
+    color: #3d1828;
+    font: inherit;
+    font-size: 0.82rem;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.footerRow {
+    display: flex;
+    min-height: 2.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.5rem 0.7rem;
+}
+
+.clearButton,
+.focusButton {
+    min-height: 2rem;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.clearButton {
+    color: #795462;
+    text-decoration: underline;
+    text-underline-offset: 0.18rem;
+}
+
+.focusButton {
+    padding: 0.38rem 0.65rem;
+    border: 1px solid #ef547c;
+    border-radius: 0.45rem;
+    background: #ef547c;
+    color: #fff;
+}
+
+.focusButton:hover:not(:disabled) {
+    background: #d8426d;
+}
+
+.focusButton:disabled {
+    border-color: #d8c5cb;
+    background: #eee5e8;
+    color: #89747c;
+    cursor: not-allowed;
+}
+
+@media (max-width: 44rem) {
+    .observationControl {
+        top: auto;
+        bottom: 5.25rem;
+        left: 0.65rem;
+        width: min(17rem, calc(100vw - 1.3rem));
+        max-width: none;
+    }
+
+    .filterCard {
+        width: 100%;
+    }
+
+    .motif {
+        flex-basis: 2rem;
+        width: 2rem;
+        height: 2rem;
+        margin-right: 0.55rem;
+        font-size: 1.1rem;
+    }
+
+    .countLabel {
+        overflow: hidden;
+        font-size: 0.8rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .focusButton {
+        transition: none;
+    }
+}

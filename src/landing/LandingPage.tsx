@@ -3,13 +3,15 @@ import Dispatcher from '@/stores/Dispatcher'
 import { SetQueryPoints } from '@/actions/Actions'
 import { QueryPoint, QueryPointType } from '@/stores/QueryStore'
 import { getApi } from '@/api/Api'
+import AuthStatus from '@/auth/AuthStatus'
 import styles from './LandingPage.module.css'
 
 interface LandingPageProps {
     onEnterMap: () => void
+    onShareObservation: () => void
 }
 
-export default function LandingPage({ onEnterMap }: LandingPageProps) {
+export default function LandingPage({ onEnterMap, onShareObservation }: LandingPageProps) {
     const [start, setStart] = useState('')
     const [destination, setDestination] = useState('')
     const [error, setError] = useState('')
@@ -73,12 +75,10 @@ export default function LandingPage({ onEnterMap }: LandingPageProps) {
         <div className={styles.page}>
             <div className={styles.shell}>
                 <header className={styles.header}>
-                    <div className={styles.brandBlock}>
-                        <div className={styles.brandMark}>H</div>
-                        <div>
-                            <p className={styles.brandName}>HerStreet</p>
-                            <p className={styles.brandTag}>A more thoughtful way home</p>
-                        </div>
+                    <div className={styles.brandBlock} aria-label="HerStreet home">
+                        <span className={styles.brandFlourish}>✿</span>
+                        <p className={styles.brandName}>HerStreet</p>
+                        <span className={styles.brandFlower}>✿</span>
                     </div>
                     <nav className={styles.nav} aria-label="Primary navigation">
                         <button type="button" className={styles.navButton} onClick={onEnterMap}>
@@ -87,7 +87,9 @@ export default function LandingPage({ onEnterMap }: LandingPageProps) {
                         <button
                             type="button"
                             className={styles.navButton}
-                            onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                            onClick={() =>
+                                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
+                            }
                         >
                             How it works
                         </button>
@@ -98,97 +100,151 @@ export default function LandingPage({ onEnterMap }: LandingPageProps) {
                         >
                             Community
                         </button>
-                        <button type="button" className={styles.primaryButton} onClick={onEnterMap}>
-                            Share an observation
+                        <button type="button" className={styles.primaryButton} onClick={onShareObservation}>
+                            Share an observation <span aria-hidden="true">✿</span>
                         </button>
+                        <AuthStatus />
                     </nav>
                 </header>
 
                 <main className={styles.heroGrid}>
                     <section className={styles.content}>
-                        <p className={styles.eyebrow}>A MORE THOUGHTFUL WAY HOME</p>
+                        <p className={styles.eyebrow}>— ✦ A MORE THOUGHTFUL WAY HOME ✦</p>
                         <h1 className={styles.headline}>
                             Know how a place feels <span className={styles.highlight}>before</span> you get there.
                         </h1>
                         <p className={styles.description}>
-                            Compare walking routes with lighting, street activity, transport access, public amenities, and
-                            the freshness of local observations.
+                            Compare walking routes using recent community observations about lighting, activity,
+                            transport and accessibility.
                         </p>
 
                         <form className={styles.searchCard} onSubmit={handleSubmit}>
                             <label className={styles.field}>
-                                <span>Starting point</span>
+                                <span className={styles.fieldIcon} aria-hidden="true">
+                                    ◎
+                                </span>
+                                <span className={styles.srOnly}>Starting point</span>
                                 <input
+                                    name="starting-point"
                                     value={start}
                                     onChange={event => setStart(event.target.value)}
                                     placeholder="Enter a starting point"
+                                    autoComplete="street-address"
+                                    aria-describedby="location-privacy-note"
                                 />
                             </label>
                             <label className={styles.field}>
-                                <span>Destination</span>
+                                <span className={styles.fieldIcon} aria-hidden="true">
+                                    ●
+                                </span>
+                                <span className={styles.srOnly}>Destination</span>
                                 <input
+                                    name="destination"
                                     value={destination}
                                     onChange={event => setDestination(event.target.value)}
-                                    placeholder="Enter a destination"
+                                    placeholder="Where are you going?"
+                                    autoComplete="street-address"
+                                    aria-describedby="location-privacy-note"
                                 />
                             </label>
                             <button className={styles.compareButton} type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? 'Comparing routes…' : 'Compare routes'}
+                                {isSubmitting ? 'Comparing routes…' : 'Compare routes ✦'}
                             </button>
-                            {error ? <p className={styles.errorText}>{error}</p> : null}
+                            {error ? (
+                                <p className={styles.errorText} role="alert">
+                                    {error}
+                                </p>
+                            ) : null}
+                            <p className={styles.privacyNote} id="location-privacy-note">
+                                <span aria-hidden="true">♙</span> Your location is never shared publicly. HerStreet
+                                shares observations, not guarantees.
+                            </p>
                         </form>
-
-                        <p className={styles.privacyNote}>
-                            HerStreet shares practical observations, not guarantees. Routes are compared with care and
-                            transparency.
-                        </p>
                     </section>
 
-                    <aside className={styles.previewPanel} aria-label="Route preview">
+                    <aside className={styles.previewPanel} aria-label="Example route preview">
+                        <p className={styles.exampleNotice}>Example preview · not live data</p>
+                        <div className={styles.mapPattern} aria-hidden="true" />
+                        <svg className={styles.routeMap} viewBox="0 0 760 470" aria-hidden="true">
+                            <path
+                                className={styles.altRoute}
+                                d="M65 390 C145 375 100 310 165 294 S135 215 205 198 S180 125 260 112 S342 76 380 125 S455 102 480 158 S473 290 525 331 S430 392 350 405 S210 438 160 400"
+                            />
+                            <path
+                                className={styles.mainRoute}
+                                d="M65 390 C125 377 145 360 150 326 S205 321 224 285 S281 270 296 231 S346 222 365 185 S424 184 428 139 S495 121 548 88"
+                            />
+                            <circle cx="65" cy="390" r="17" className={styles.routePoint} />
+                            <circle cx="548" cy="88" r="17" className={styles.routePoint} />
+                            <circle cx="296" cy="231" r="13" className={styles.routePointSmall} />
+                        </svg>
+                        <div className={styles.startPin} aria-hidden="true">
+                            ⌖
+                        </div>
+                        <div className={styles.finishPin} aria-hidden="true">
+                            ♥
+                        </div>
+
                         <div className={styles.previewCard}>
-                            <div className={styles.previewHeader}>
-                                <div>
-                                    <p className={styles.previewLabel}>Alternative walking routes</p>
-                                    <p className={styles.previewTitle}>From the station to the clinic</p>
-                                </div>
-                                <span className={styles.previewBadge}>Comfort route</span>
-                            </div>
-                            <div className={styles.routeRow}>
-                                <div className={styles.routeLine} />
-                                <div className={styles.routeLineSecondary} />
-                            </div>
-                            <div className={styles.previewStats}>
-                                <div>
-                                    <p className={styles.statTitle}>Travel time</p>
-                                    <p className={styles.statValue}>18 min</p>
-                                </div>
-                                <div>
-                                    <p className={styles.statTitle}>Confidence</p>
-                                    <p className={styles.statValue}>Medium</p>
-                                </div>
+                            <span className={styles.cardBow} aria-hidden="true">
+                                ⌁
+                            </span>
+                            <p className={styles.previewTitle}>Comfort route</p>
+                            <p className={styles.travelTime}>
+                                18 <span>min</span>
+                            </p>
+                            <div className={styles.confidenceRow}>
+                                <span>Confidence:</span> <strong>High</strong>
                             </div>
                             <div className={styles.chipRow}>
-                                <span className={styles.chip}>Well lit</span>
-                                <span className={styles.chip}>Shops open</span>
-                                <span className={styles.chip}>Active street</span>
+                                <span className={styles.chip}>
+                                    ♙ <span>Well lit</span>
+                                </span>
+                                <span className={styles.chip}>
+                                    ▣ <span>Shops open</span>
+                                </span>
+                                <span className={styles.chip}>
+                                    ♟ <span>Active street</span>
+                                </span>
                             </div>
                         </div>
                     </aside>
                 </main>
 
                 <section className={styles.preferenceSection} id="how-it-works">
-                    <div className={styles.preferenceCard}>
-                        <h2>What matters most</h2>
-                        <div className={styles.preferenceGrid}>
-                            <div>Better lighting</div>
-                            <div>Active streets</div>
-                            <div>Transport nearby</div>
-                            <div>Accessible paths</div>
-                        </div>
+                    <div className={styles.sectionHeading}>
+                        <h2>✦ Choose what matters to you ✦</h2>
+                        <p>Filter routes by the features that help you feel most comfortable and confident.</p>
                     </div>
-                    <div className={styles.preferenceCard} id="community">
-                        <h2>Community observations</h2>
-                        <p>Recent notes, open shops, and simple route context help people choose a route that feels right.</p>
+                    <div className={styles.preferenceGrid} id="community">
+                        <article className={styles.preferenceCard}>
+                            <span className={styles.preferenceIcon}>♙</span>
+                            <div>
+                                <h3>Better lighting</h3>
+                                <p>Find routes with more streetlights and brighter surroundings.</p>
+                            </div>
+                        </article>
+                        <article className={styles.preferenceCard}>
+                            <span className={styles.preferenceIcon}>♟</span>
+                            <div>
+                                <h3>Active streets</h3>
+                                <p>See where people are out and about during the times you travel.</p>
+                            </div>
+                        </article>
+                        <article className={styles.preferenceCard}>
+                            <span className={styles.preferenceIcon}>▣</span>
+                            <div>
+                                <h3>Transport nearby</h3>
+                                <p>Prioritise routes close to bus stops, stations and other transit.</p>
+                            </div>
+                        </article>
+                        <article className={styles.preferenceCard}>
+                            <span className={styles.preferenceIcon}>♿</span>
+                            <div>
+                                <h3>Accessible paths</h3>
+                                <p>Discover step-free, pavement-friendly routes that are easier to navigate.</p>
+                            </div>
+                        </article>
                     </div>
                 </section>
             </div>

@@ -11,6 +11,10 @@ declare module 'config' {
     const routingApi: string
     const geocodingApi: string
     const defaultTiles: string
+    const supabase: {
+        url: string
+        anonKey: string
+    }
     const keys: {
         graphhopper: string
         omniscale: string

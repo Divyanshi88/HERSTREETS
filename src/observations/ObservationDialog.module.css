@@ -1,0 +1,453 @@
+.backdrop {
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1.5rem;
+    overflow-y: auto;
+    background: rgba(35, 15, 25, 0.72);
+    backdrop-filter: blur(8px);
+}
+
+.dialog {
+    position: relative;
+    width: min(58rem, 100%);
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    padding: clamp(1.4rem, 4vw, 3rem);
+    border: 1px solid #ee9db5;
+    border-radius: 1.25rem;
+    color: #351522;
+    background:
+        linear-gradient(rgba(255, 250, 246, 0.94), rgba(255, 250, 246, 0.94)),
+        repeating-linear-gradient(90deg, #fff9f4 0, #fff9f4 2.5rem, #fceff1 2.5rem, #fceff1 5rem);
+    box-shadow: 0 2rem 6rem rgba(29, 9, 18, 0.32);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+.closeButton {
+    position: absolute;
+    z-index: 2;
+    top: 1rem;
+    right: 1rem;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid #d988a1;
+    border-radius: 999px;
+    color: #6c2942;
+    background: #fffaf6;
+    font-size: 1.6rem;
+    cursor: pointer;
+}
+
+.heading {
+    max-width: 43rem;
+    padding-right: 2.5rem;
+}
+
+.kicker {
+    margin: 0 0 0.6rem;
+    color: #a44565;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+}
+
+.heading h2,
+.successState h2 {
+    margin: 0;
+    color: #351522;
+    font:
+        600 clamp(2.5rem, 5vw, 4.25rem) / 0.95 'Cormorant Garamond',
+        Georgia,
+        serif;
+    letter-spacing: -0.025em;
+}
+
+.heading > p:last-child,
+.successState > p {
+    max-width: 39rem;
+    margin: 0.8rem 0 0;
+    color: #684654;
+    line-height: 1.55;
+}
+
+.fieldset {
+    min-width: 0;
+    margin: 2rem 0 0;
+    padding: 0;
+    border: 0;
+}
+
+.fieldset legend,
+.selectField > span,
+.descriptionField > span {
+    margin-bottom: 0.65rem;
+    color: #5e263d;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.categoryGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7rem;
+}
+
+.categoryOption {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.8rem 1fr;
+    gap: 0.8rem;
+    align-items: center;
+    min-height: 4.5rem;
+    padding: 0.75rem;
+    border: 1px solid #e9b3c1;
+    border-radius: 0.8rem;
+    background: rgba(255, 255, 255, 0.72);
+    cursor: pointer;
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+
+.categoryOption:has(input:checked) {
+    border-color: #e9547e;
+    background: #fff0f3;
+    box-shadow: inset 0 0 0 1px #e9547e;
+}
+
+.categoryOption:hover {
+    transform: translateY(-1px);
+    border-color: #df7896;
+}
+
+.categoryOption input {
+    position: absolute;
+    opacity: 0;
+}
+
+.categoryOption input:focus-visible + .categoryIcon {
+    outline: 3px solid rgba(233, 84, 126, 0.3);
+    outline-offset: 3px;
+}
+
+.categoryIcon {
+    width: 2.8rem;
+    height: 2.8rem;
+    display: grid;
+    place-items: center;
+    border: 1px solid #ebb0c0;
+    border-radius: 0.7rem;
+    color: #a53e60;
+    background: #fff8f5;
+    font-size: 1.25rem;
+}
+
+.categoryOption strong,
+.categoryOption small {
+    display: block;
+}
+
+.categoryOption strong {
+    color: #4b1e31;
+    font-size: 0.88rem;
+}
+
+.categoryOption small {
+    margin-top: 0.15rem;
+    color: #7b5b67;
+    font-size: 0.72rem;
+}
+
+.twoColumnFields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.selectField,
+.descriptionField {
+    display: flex;
+    flex-direction: column;
+}
+
+.fieldset + .selectField {
+    margin-top: 1.5rem;
+}
+
+.selectField select,
+.selectField input,
+.descriptionField textarea {
+    width: 100%;
+    border: 1px solid #e7acbc;
+    border-radius: 0.7rem;
+    color: #351522;
+    background: rgba(255, 255, 255, 0.82);
+    font:
+        500 0.9rem 'Inter',
+        sans-serif;
+}
+
+.selectField select {
+    min-height: 3.15rem;
+    padding: 0 0.8rem;
+}
+
+.selectField input {
+    min-height: 3.15rem;
+    padding: 0 0.8rem;
+}
+
+.selectField em {
+    color: #987682;
+    font-style: normal;
+    font-weight: 500;
+    text-transform: none;
+}
+
+.descriptionField {
+    position: relative;
+    margin-top: 1.5rem;
+}
+
+.descriptionField em {
+    color: #987682;
+    font-style: normal;
+    font-weight: 500;
+    text-transform: none;
+}
+
+.descriptionField textarea {
+    min-height: 6.5rem;
+    resize: vertical;
+    padding: 0.85rem;
+    line-height: 1.5;
+}
+
+.descriptionField > small {
+    align-self: flex-end;
+    margin-top: 0.3rem;
+    color: #8a6674;
+}
+
+.locationCard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    padding: 1rem;
+    border: 1px dashed #df8fa7;
+    border-radius: 0.8rem;
+    background: #fff4f5;
+}
+
+.locationCard strong {
+    color: #57233a;
+}
+
+.locationCard p {
+    margin: 0.25rem 0 0;
+    color: #765461;
+    font-size: 0.75rem;
+}
+
+.locationCard button,
+.submitButton {
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 0.65rem;
+    color: #fff;
+    background: #ec5a82;
+    font:
+        700 0.82rem 'Inter',
+        sans-serif;
+    cursor: pointer;
+}
+
+.locationCard button {
+    padding: 0.75rem 0.9rem;
+}
+
+.locationCard button:disabled,
+.submitButton:disabled {
+    opacity: 0.62;
+    cursor: wait;
+}
+
+.error {
+    margin: 0.9rem 0 0;
+    padding: 0.75rem;
+    border-left: 3px solid #b72f52;
+    color: #8d2441;
+    background: #fff0f2;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.notice {
+    margin: 0.9rem 0 0;
+    padding: 0.75rem;
+    border-left: 3px solid #4d8b72;
+    color: #285c49;
+    background: #eef9f4;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid #edbcc8;
+}
+
+.footer p {
+    max-width: 34rem;
+    margin: 0;
+    color: #795966;
+    font-size: 0.72rem;
+    line-height: 1.45;
+}
+
+.submitButton {
+    min-width: 12rem;
+    padding: 0.9rem 1.1rem;
+}
+
+.successState {
+    min-height: 26rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    max-width: 40rem;
+    margin: 0 auto;
+}
+
+.loadingState {
+    min-height: 20rem;
+    display: grid;
+    place-items: center;
+    color: #765461;
+    font-weight: 700;
+}
+
+.authForm {
+    max-width: 31rem;
+    margin: 0 auto;
+}
+
+.authForm h2 {
+    margin: 0;
+    color: #351522;
+    font:
+        600 clamp(2.5rem, 5vw, 4rem) / 0.95 'Cormorant Garamond',
+        Georgia,
+        serif;
+}
+
+.authForm > p:not(.kicker, .error, .notice) {
+    color: #684654;
+    line-height: 1.55;
+}
+
+.authForm label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    color: #5e263d;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.authForm input {
+    min-height: 3.15rem;
+    padding: 0 0.8rem;
+    border: 1px solid #e7acbc;
+    border-radius: 0.7rem;
+    color: #351522;
+    background: rgba(255, 255, 255, 0.82);
+    font:
+        500 0.9rem 'Inter',
+        sans-serif;
+}
+
+.authForm .submitButton {
+    width: 100%;
+    margin-top: 1.2rem;
+}
+
+.textButton {
+    width: 100%;
+    margin-top: 0.8rem;
+    border: 0;
+    color: #a13d60;
+    background: transparent;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.successMark {
+    display: grid;
+    place-items: center;
+    width: 4rem;
+    height: 4rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #e88ca6;
+    border-radius: 999px;
+    color: #eb547d;
+    background: #fff0f3;
+    font-size: 2rem;
+}
+
+.successState .submitButton {
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 680px) {
+    .backdrop {
+        padding: 0;
+        align-items: end;
+    }
+
+    .dialog {
+        width: 100%;
+        max-height: 94vh;
+        padding: 1.4rem 1rem 1.5rem;
+        border-radius: 1.25rem 1.25rem 0 0;
+    }
+
+    .categoryGrid,
+    .twoColumnFields {
+        grid-template-columns: 1fr;
+    }
+
+    .locationCard,
+    .footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .submitButton {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .categoryOption {
+        transition: none;
+    }
+}

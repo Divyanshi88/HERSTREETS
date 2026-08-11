@@ -52,6 +52,9 @@ import { SettingsContext } from '@/contexts/SettingsContext'
 import usePOIsLayer from '@/layers/UsePOIsLayer'
 import useCurrentLocationLayer from '@/layers/UseCurrentLocationLayer'
 import LandingPage from '@/landing/LandingPage'
+import ObservationDialog from '@/observations/ObservationDialog'
+import { supabase } from '@/lib/supabase'
+import PublicReportsLayer from '@/layers/PublicReportsLayer'
 
 export const POPUP_CONTAINER_ID = 'popup-container'
 export const SIDEBAR_CONTENT_ID = 'sidebar-content'
@@ -68,6 +71,9 @@ export default function App() {
     const [pois, setPOIs] = useState(getPOIsStore().state)
     const [currentLocation, setCurrentLocation] = useState(getCurrentLocationStore().state)
     const [showLanding, setShowLanding] = useState(true)
+    const [showObservationDialog, setShowObservationDialog] = useState(false)
+    const [passwordRecovery, setPasswordRecovery] = useState(false)
+    const [publicReportsRefreshKey, setPublicReportsRefreshKey] = useState(0)
 
     const map = getMap()
 
@@ -118,6 +124,17 @@ export default function App() {
         }
     }, [])
 
+    useEffect(() => {
+        if (!supabase) return
+        const { data } = supabase.auth.onAuthStateChange(event => {
+            if (event === 'PASSWORD_RECOVERY') {
+                setPasswordRecovery(true)
+                setShowObservationDialog(true)
+            }
+        })
+        return () => data.subscription.unsubscribe()
+    }, [])
+
     // our different map layers
     useBackgroundLayer(map, mapOptions.selectedStyle)
     useExternalMVTLayer(map, mapOptions.externalMVTEnabled)
@@ -135,17 +152,24 @@ export default function App() {
     usePOIsLayer(map, pois)
     useCurrentLocationLayer(map, currentLocation)
 
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 44rem)' })
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 56rem)' })
     return (
         <SettingsContext.Provider value={settings}>
-            <div className={styles.appWrapper}>
+            <div className={`${styles.appWrapper} ${showLanding ? styles.landingMode : styles.mapMode}`}>
                 {showLanding ? (
                     <div className="landingViewport">
-                        <LandingPage onEnterMap={() => setShowLanding(false)} />
+                        <LandingPage
+                            onEnterMap={() => setShowLanding(false)}
+                            onShareObservation={() => setShowObservationDialog(true)}
+                        />
                     </div>
                 ) : (
                     <>
-                        <button type="button" className={styles.returnLandingButton} onClick={() => setShowLanding(true)}>
+                        <button
+                            type="button"
+                            className={styles.returnLandingButton}
+                            onClick={() => setShowLanding(true)}
+                        >
                             ← Back to landing
                         </button>
                         <MapPopups
@@ -155,6 +179,7 @@ export default function App() {
                             poiState={pois}
                             query={query}
                         />
+                        <PublicReportsLayer map={map} enabled={!showLanding} refreshKey={publicReportsRefreshKey} />
                         <ContextMenu map={map} route={route} queryPoints={query.queryPoints} />
                         {isSmallScreen ? (
                             <SmallScreenLayout
@@ -193,6 +218,15 @@ export default function App() {
                         )}
                     </>
                 )}
+                <ObservationDialog
+                    open={showObservationDialog}
+                    passwordRecovery={passwordRecovery}
+                    onSubmitted={() => setPublicReportsRefreshKey(value => value + 1)}
+                    onClose={() => {
+                        setShowObservationDialog(false)
+                        setPasswordRecovery(false)
+                    }}
+                />
             </div>
         </SettingsContext.Provider>
     )
