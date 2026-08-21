@@ -305,11 +305,11 @@ npm run format
 - [x] Connect to the existing versioned reports database schema
 - [x] Add the optional Supabase client foundation
 - [x] Add privacy rounding and row-level security policies
-- [ ] Add authentication screens
-- [ ] Create the report-submission flow
-- [ ] Display reports on the map
-- [ ] Add category and time filters
-- [ ] Add report confirmation
+- [x] Add authentication screens
+- [x] Create the report-submission flow
+- [x] Display reports on the map
+- [x] Add category and time filters
+- [x] Add report confirmation and changed-condition responses
 - [ ] Add moderation controls
 
 ### Phase 3 — Route Intelligence

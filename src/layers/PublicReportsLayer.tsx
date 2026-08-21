@@ -7,8 +7,8 @@ import VectorSource from 'ol/source/Vector'
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style'
 import { Fragment, useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { listPublicReports } from '@/observations/observationService'
-import { PublicReport } from '@/observations/observationTypes'
+import { getMyReportResponse, listPublicReports, respondToReport } from '@/observations/observationService'
+import { PublicReport, ReportResponse } from '@/observations/observationTypes'
 import { focusPublicReports } from './PublicReportsFocus'
 import { filterPublicReports, getPublicReportCategoryOptions, PublicReportTimeFilter } from './PublicReportsFilters'
 import styles from './PublicReportsLayer.module.css'
@@ -40,6 +40,9 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
     const [filtersOpen, setFiltersOpen] = useState(false)
     const [categorySlug, setCategorySlug] = useState('')
     const [timeOfDay, setTimeOfDay] = useState<PublicReportTimeFilter>('')
+    const [myResponse, setMyResponse] = useState<ReportResponse | null>(null)
+    const [responseState, setResponseState] = useState<'idle' | 'saving'>('idle')
+    const [responseMessage, setResponseMessage] = useState('')
     const popupElement = useMemo(() => document.createElement('div'), [])
     const controlElement = useMemo(() => {
         const element = document.createElement('div')
@@ -146,6 +149,21 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
         popupOverlay.setPosition(selected ? fromLonLat([selected.longitude, selected.latitude]) : undefined)
     }, [popupOverlay, selected])
 
+    useEffect(() => {
+        let active = true
+        setMyResponse(null)
+        setResponseMessage('')
+        if (!selected) return
+
+        getMyReportResponse(selected.id)
+            .then(response => active && setMyResponse(response))
+            .catch(() => active && setResponseMessage('Your previous response could not be loaded.'))
+
+        return () => {
+            active = false
+        }
+    }, [selected?.id])
+
     const countLabel = activeFilterCount
         ? `${filteredReports.length} of ${reports.length} observations`
         : `${reports.length} community ${reports.length === 1 ? 'observation' : 'observations'}`
@@ -153,6 +171,29 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
     const clearFilters = () => {
         setCategorySlug('')
         setTimeOfDay('')
+    }
+    const saveResponse = async (response: ReportResponse) => {
+        if (!selected || responseState === 'saving') return
+        setResponseState('saving')
+        setResponseMessage('')
+        try {
+            const result = await respondToReport(selected.id, response)
+            const updated = {
+                ...selected,
+                confirmationCount: result.confirmationCount,
+                disagreementCount: result.disagreementCount,
+            }
+            setMyResponse(result.currentResponse)
+            setSelected(updated)
+            setReports(current => current.map(report => (report.id === updated.id ? updated : report)))
+            setResponseMessage(
+                response === 'confirmed' ? 'Thanks for confirming.' : 'Thanks. We marked this as changed.',
+            )
+        } catch (responseError) {
+            setResponseMessage(responseError instanceof Error ? responseError.message : 'Unable to save your response.')
+        } finally {
+            setResponseState('idle')
+        }
     }
 
     return (
@@ -256,8 +297,34 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
                         ) : null}
                         {selected.comment ? <p className={styles.comment}>{selected.comment}</p> : null}
                         <p className={styles.meta}>
-                            {formatObservedAt(selected.observedAt)} · {selected.confirmationCount} confirmations
+                            {formatObservedAt(selected.observedAt)} · {selected.confirmationCount} confirmations ·{' '}
+                            {selected.disagreementCount} changed
                         </p>
+                        <div className={styles.responseActions} aria-label="Respond to this observation">
+                            <button
+                                className={myResponse === 'confirmed' ? styles.responseActive : undefined}
+                                type="button"
+                                onClick={() => saveResponse('confirmed')}
+                                disabled={responseState === 'saving'}
+                                aria-pressed={myResponse === 'confirmed'}
+                            >
+                                I also observed this
+                            </button>
+                            <button
+                                className={myResponse === 'changed' ? styles.responseActive : undefined}
+                                type="button"
+                                onClick={() => saveResponse('changed')}
+                                disabled={responseState === 'saving'}
+                                aria-pressed={myResponse === 'changed'}
+                            >
+                                Conditions changed
+                            </button>
+                        </div>
+                        {responseMessage ? (
+                            <p className={styles.responseMessage} role="status">
+                                {responseMessage}
+                            </p>
+                        ) : null}
                         <p className={styles.privacy}>Approximate public location—not a safety guarantee.</p>
                     </article>
                 ) : null,

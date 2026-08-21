@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
+import MyObservationsPanel from '@/observations/MyObservationsPanel'
 import styles from './AuthStatus.module.css'
 
 export default function AuthStatus() {
     const [user, setUser] = useState<User | null>(null)
     const [signingOut, setSigningOut] = useState(false)
+    const [observationsOpen, setObservationsOpen] = useState(false)
 
     useEffect(() => {
         if (!supabase) return
@@ -32,14 +34,26 @@ export default function AuthStatus() {
     }
 
     return (
-        <div className={styles.account} aria-label="Signed-in account">
-            <span className={styles.dot} aria-hidden="true" />
-            <span className={styles.email} title={user.email}>
-                {user.email}
-            </span>
-            <button type="button" onClick={signOut} disabled={signingOut}>
-                {signingOut ? 'Signing out…' : 'Sign out'}
-            </button>
-        </div>
+        <>
+            <div className={styles.account} aria-label="Signed-in account">
+                <span className={styles.dot} aria-hidden="true" />
+                <span className={styles.email} title={user.email}>
+                    {user.email}
+                </span>
+                <span className={styles.actions}>
+                    <button
+                        className={styles.observationsButton}
+                        type="button"
+                        onClick={() => setObservationsOpen(true)}
+                    >
+                        My observations
+                    </button>
+                    <button className={styles.signOutButton} type="button" onClick={signOut} disabled={signingOut}>
+                        {signingOut ? 'Signing out…' : 'Sign out'}
+                    </button>
+                </span>
+            </div>
+            <MyObservationsPanel open={observationsOpen} onClose={() => setObservationsOpen(false)} />
+        </>
     )
 }
