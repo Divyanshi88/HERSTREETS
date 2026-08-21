@@ -2,12 +2,16 @@ import { useEffect, useState } from 'react'
 import type { User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import MyObservationsPanel from '@/observations/MyObservationsPanel'
+import ModerationPanel from '@/moderation/ModerationPanel'
+import { isModerator as checkModeratorAccess } from '@/moderation/moderationService'
 import styles from './AuthStatus.module.css'
 
 export default function AuthStatus() {
     const [user, setUser] = useState<User | null>(null)
     const [signingOut, setSigningOut] = useState(false)
     const [observationsOpen, setObservationsOpen] = useState(false)
+    const [moderationOpen, setModerationOpen] = useState(false)
+    const [moderator, setModerator] = useState(false)
 
     useEffect(() => {
         if (!supabase) return
@@ -23,6 +27,23 @@ export default function AuthStatus() {
             data.subscription.unsubscribe()
         }
     }, [])
+
+    useEffect(() => {
+        let active = true
+        setModerator(false)
+        setModerationOpen(false)
+        if (!user)
+            return () => {
+                active = false
+            }
+
+        checkModeratorAccess()
+            .then(hasAccess => active && setModerator(hasAccess))
+            .catch(() => active && setModerator(false))
+        return () => {
+            active = false
+        }
+    }, [user?.id])
 
     if (!supabase || !user) return null
 
@@ -48,12 +69,22 @@ export default function AuthStatus() {
                     >
                         My observations
                     </button>
+                    {moderator ? (
+                        <button
+                            className={styles.moderationButton}
+                            type="button"
+                            onClick={() => setModerationOpen(true)}
+                        >
+                            Moderation
+                        </button>
+                    ) : null}
                     <button className={styles.signOutButton} type="button" onClick={signOut} disabled={signingOut}>
                         {signingOut ? 'Signing out…' : 'Sign out'}
                     </button>
                 </span>
             </div>
             <MyObservationsPanel open={observationsOpen} onClose={() => setObservationsOpen(false)} />
+            <ModerationPanel open={moderationOpen} onClose={() => setModerationOpen(false)} />
         </>
     )
 }

@@ -268,6 +268,15 @@ Create a production build:
 npm run build
 ```
 
+### Production deployment
+
+Pushes to `main` run type-checking, the complete test suite, and the production
+build before deploying `dist/` to GitHub Pages. In the repository settings,
+set **Pages → Build and deployment → Source** to **GitHub Actions**.
+
+The browser uses the public Supabase publishable key in `config.js`. Keep secret
+and service-role keys out of this repository and out of frontend code.
+
 Run the tests:
 
 ```bash

@@ -12,7 +12,7 @@ const config = {
     // Copy config.js to config-local.js and fill these values for local development.
     supabase: {
         url: 'https://piygrytamddojgbcnyiq.supabase.co',
-        anonKey: '',
+        anonKey: 'sb_publishable_U_MVHvJT5pGF0T7vvAhVUw_1fcM-cEY',
     },
     // various api keys used for the GH backend and the different tile providers
     keys: {

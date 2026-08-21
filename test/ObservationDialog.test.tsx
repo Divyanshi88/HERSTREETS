@@ -1,6 +1,11 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { createRoot } from 'react-dom/client'
+
+jest.mock('config', () => ({
+    supabase: { url: 'https://example.supabase.co', anonKey: '' },
+}))
+
 import ObservationDialog from '@/observations/ObservationDialog'
 
 describe('ObservationDialog', () => {
