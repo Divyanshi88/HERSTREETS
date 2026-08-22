@@ -138,6 +138,7 @@
     line-height: 1.48;
 }
 .searchCard {
+    min-width: 0;
     padding: 0.85rem 1.15rem 0.55rem;
     border: 1px solid #eda3b7;
     border-radius: 1rem;
@@ -145,6 +146,7 @@
     box-shadow: 0 12px 30px rgba(95, 38, 68, 0.08);
 }
 .field {
+    min-width: 0;
     display: grid;
     grid-template-columns: 2rem 1fr;
     align-items: center;
@@ -164,7 +166,10 @@
     font-size: 1.1rem;
 }
 .field input {
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
+    box-sizing: border-box;
     border: 0;
     padding: 0.8rem 0.4rem;
     background: transparent;
@@ -173,6 +178,9 @@
         500 0.95rem 'Inter',
         sans-serif;
     outline: none;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: nowrap;
 }
 .compareButton {
     width: 100%;
@@ -523,6 +531,14 @@
     }
 }
 @media (max-width: 560px) {
+    .searchCard,
+    .field,
+    .field input {
+        min-width: 0;
+    }
+    .field input {
+        font-size: 1rem;
+    }
     .brandName {
         font-size: 2.5rem;
     }

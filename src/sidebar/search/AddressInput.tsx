@@ -38,6 +38,8 @@ export interface AddressInputProps {
     map: Map
 }
 
+type SearchState = 'idle' | 'loading' | 'results' | 'empty' | 'error'
+
 export default function AddressInput(props: AddressInputProps) {
     const [origText, setOrigText] = useState(props.point.queryText)
     // controlled component pattern with initial value set from props
@@ -47,6 +49,14 @@ export default function AddressInput(props: AddressInputProps) {
     // keep track of focus and toggle fullscreen display on small screens
     const [hasFocus, setHasFocus] = useState(false)
     const isSmallScreen = useMediaQuery({ query: '(max-width: 44rem)' })
+
+    useEffect(() => {
+        if (!hasFocus || !isSmallScreen) return
+        document.body.dataset.addressSearchOpen = 'true'
+        return () => {
+            delete document.body.dataset.addressSearchOpen
+        }
+    }, [hasFocus, isSmallScreen])
     const prevPoint = props.index > 0 ? props.points[props.index - 1] : undefined
     const excludeCoord = prevPoint?.isInitialized ? prevPoint.coordinate : undefined
 
@@ -54,27 +64,37 @@ export default function AddressInput(props: AddressInputProps) {
     // point gets changed from outside also gets filled with an item to select the current location as input if input
     // has focus and geocoding results are empty
     const [autocompleteItems, setAutocompleteItems] = useState<AutocompleteItem[]>([])
+    const [searchState, setSearchState] = useState<SearchState>('idle')
     const [geocoder] = useState(
-        new Geocoder(getApi(), (query, provider, hits) => {
-            const items: AutocompleteItem[] = []
-            const parseResult = AddressParseResult.parse(query, true)
-            if (parseResult.hasPOIs()) items.push(new POIQueryItem(parseResult))
+        new Geocoder(
+            getApi(),
+            (query, provider, hits) => {
+                const items: AutocompleteItem[] = []
+                const parseResult = AddressParseResult.parse(query, true)
+                if (parseResult.hasPOIs()) items.push(new POIQueryItem(parseResult))
 
-            hits.forEach(hit => {
-                const obj = hitToItem(hit)
-                items.push(
-                    new GeocodingItem(
-                        obj.mainText,
-                        obj.secondText,
-                        hit.point,
-                        hit.extent ? hit.extent : getBBoxFromCoord(hit.point),
-                    ),
-                )
-            })
+                hits.forEach(hit => {
+                    const obj = hitToItem(hit)
+                    items.push(
+                        new GeocodingItem(
+                            obj.mainText,
+                            obj.secondText,
+                            hit.point,
+                            hit.extent ? hit.extent : getBBoxFromCoord(hit.point),
+                        ),
+                    )
+                })
 
-            setOrigText(query)
-            setAutocompleteItems(items)
-        }),
+                setOrigText(query)
+                setAutocompleteItems(items)
+                setSearchState(items.length > 0 ? 'results' : 'empty')
+            },
+            () => setSearchState('loading'),
+            () => {
+                setAutocompleteItems([])
+                setSearchState('error')
+            },
+        ),
     )
 
     const [poiSearch] = useState(new ReverseGeocoder(getApi(), props.point, AddressParseResult.handleGeocodingResponse))
@@ -92,6 +112,7 @@ export default function AddressInput(props: AddressInputProps) {
         }
         if (text === '') {
             setAutocompleteItems(buildRecentItems(undefined, 5, excludeCoord))
+            setSearchState('idle')
         }
     }, [hasFocus, excludeCoord])
 
@@ -163,6 +184,7 @@ export default function AddressInput(props: AddressInputProps) {
                                         props.onLocationSelected(item.mainText, item.secondText, item.point)
                                     }
                                 })
+                                .catch(() => setSearchState('error'))
                         } else if (item instanceof GeocodingItem) {
                             props.onLocationSelected(item.mainText, item.secondText, item.point)
                         }
@@ -230,14 +252,17 @@ export default function AddressInput(props: AddressInputProps) {
                         if (query === '') {
                             geocoder.cancel()
                             setAutocompleteItems(buildRecentItems(undefined, 5, excludeCoord))
+                            setSearchState('idle')
                         } else {
                             const coordinate = textToCoordinate(query)
                             if (coordinate) {
                                 geocoder.cancel()
                                 setAutocompleteItems([])
+                                setSearchState('idle')
                             } else {
                                 if (query.length < 2) {
                                     setAutocompleteItems(buildRecentItems(query, 5, excludeCoord))
+                                    setSearchState('idle')
                                 }
                                 geocoder.request(query, biasCoord, getMap().getView().getZoom())
                             }
@@ -253,6 +278,7 @@ export default function AddressInput(props: AddressInputProps) {
                         setHasFocus(false)
                         geocoder.cancel()
                         setAutocompleteItems([])
+                        setSearchState('idle')
                     }}
                     value={text}
                     placeholder={tr(
@@ -271,6 +297,7 @@ export default function AddressInput(props: AddressInputProps) {
                         setText('')
                         props.onChange('')
                         setAutocompleteItems(buildRecentItems(undefined, 5, excludeCoord))
+                        setSearchState('idle')
                         // if we clear the text without focus then explicitly request it to improve usability:
                         searchInput.current!.focus()
                     }}
@@ -319,7 +346,38 @@ export default function AddressInput(props: AddressInputProps) {
                         />
                     </ResponsiveAutocomplete>
                 )}
+                {hasFocus && (searchState === 'loading' || searchState === 'empty' || searchState === 'error') && (
+                    <SearchFeedback
+                        state={searchState}
+                        onRetry={() => geocoder.request(text, biasCoord, getMap().getView().getZoom())}
+                    />
+                )}
             </div>
+        </div>
+    )
+}
+
+export function SearchFeedback({ state, onRetry }: { state: SearchState; onRetry: () => void }) {
+    const message =
+        state === 'loading'
+            ? 'Searching…'
+            : state === 'empty'
+              ? 'No matching places found. Try adding the locality or city.'
+              : 'Search could not connect. Your connection or privacy protection may be blocking map services.'
+
+    return (
+        <div className={styles.searchFeedback} role="status" aria-live="polite">
+            <p>{message}</p>
+            {state === 'error' ? (
+                <button
+                    type="button"
+                    className={styles.retryButton}
+                    onMouseDown={event => event.preventDefault()}
+                    onClick={onRetry}
+                >
+                    Try again
+                </button>
+            ) : null}
         </div>
     )
 }
@@ -385,15 +443,24 @@ function calculateHighlightedIndex(length: number, currentIndex: number, increme
  * This could definitely be achieved with an effect. But after trying for a while I saved some money and wrote it the
  * Way I know. If we hire an 10+ react developer, this should be changed.
  */
-class Geocoder {
+export class Geocoder {
     private requestId = 0
     private readonly timeout = new Timout(100)
     private readonly api: Api
     private readonly onSuccess: (query: string, provider: string, hits: GeocodingHit[]) => void
+    private readonly onStart: () => void
+    private readonly onError: () => void
 
-    constructor(api: Api, onSuccess: (query: string, provider: string, hits: GeocodingHit[]) => void) {
+    constructor(
+        api: Api,
+        onSuccess: (query: string, provider: string, hits: GeocodingHit[]) => void,
+        onStart: () => void = () => undefined,
+        onError: () => void = () => undefined,
+    ) {
         this.api = api
         this.onSuccess = onSuccess
+        this.onStart = onStart
+        this.onError = onError
     }
 
     request(query: string, bias: Coordinate | undefined, zoom = 11) {
@@ -411,6 +478,7 @@ class Geocoder {
         const currentId = this.getNextId()
         this.timeout.cancel()
         if (!query || query.length < 2) return
+        this.onStart()
 
         await this.timeout.wait()
         try {
@@ -421,7 +489,7 @@ class Geocoder {
             const hits = Geocoder.filterDuplicates(result.hits)
             if (currentId === this.requestId) this.onSuccess(query, provider, hits)
         } catch (reason) {
-            throw Error('Could not get geocoding results because: ' + reason)
+            if (currentId === this.requestId) this.onError()
         }
     }
 
@@ -496,7 +564,8 @@ export class ReverseGeocoder {
             }
             if (currentId === this.requestId) this.onSuccess(hits, parseResult, this.queryPoint)
         } catch (reason) {
-            throw Error('Could not get geocoding results because: ' + reason)
+            // A failed POI lookup should not create an unhandled promise rejection.
+            return
         }
     }
 

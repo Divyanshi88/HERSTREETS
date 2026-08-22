@@ -375,6 +375,22 @@
 }
 
 @media (max-width: 56rem) {
+    :global(body[data-address-search-open='true']) .guideButton,
+    :global(body[data-address-search-open='true']) .returnLandingButton,
+    :global(body[data-address-search-open='true']) .smallScreenMapOptions,
+    :global(body[data-address-search-open='true']) .smallScreenFooter {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    :global(body[data-address-search-open='true']) .smallScreenSidebar {
+        z-index: 100;
+    }
+
+    :global(body[data-address-search-open='true']) .map {
+        pointer-events: none;
+    }
+
     .returnLandingButton {
         top: max(0.35rem, env(safe-area-inset-top, 0px));
         left: max(0.5rem, env(safe-area-inset-left, 0px));

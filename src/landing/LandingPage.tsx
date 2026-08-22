@@ -125,7 +125,7 @@ export default function LandingPage({ onEnterMap, onShareObservation, onTryDemo,
                                     value={start}
                                     onChange={event => setStart(event.target.value)}
                                     placeholder="Enter a starting point"
-                                    autoComplete="street-address"
+                                    autoComplete="off"
                                     aria-describedby="location-privacy-note"
                                 />
                             </label>
@@ -139,7 +139,7 @@ export default function LandingPage({ onEnterMap, onShareObservation, onTryDemo,
                                     value={destination}
                                     onChange={event => setDestination(event.target.value)}
                                     placeholder="Where are you going?"
-                                    autoComplete="street-address"
+                                    autoComplete="off"
                                     aria-describedby="location-privacy-note"
                                 />
                             </label>

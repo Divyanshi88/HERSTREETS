@@ -30,9 +30,14 @@
     border-radius: 0.2rem;
     /* for the radius we need some padding otherwise the corners will be nearly hidden */
     padding: 1px;
+    min-width: 0;
 }
 
 .input {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     border: none;
     padding: 0.25rem 0.5rem;
     font-size: 1.05rem;
@@ -43,8 +48,42 @@
 }
 
 .smallList {
-    grid-column: 2 / 3;
+    grid-column: 1 / -1;
     overflow-x: hidden;
+}
+
+.searchFeedback {
+    grid-column: 1 / -1;
+    padding: 1rem;
+    color: #4c2340;
+    background: #fffaf5;
+    border-top: 1px solid #efb1c1;
+    line-height: 1.45;
+}
+
+.searchFeedback p {
+    margin: 0;
+}
+
+.retryButton {
+    width: auto;
+    min-width: 0;
+    min-height: 44px;
+    margin-top: 0.75rem;
+    padding: 0.65rem 1rem;
+    box-sizing: border-box;
+    border: 1px solid #b64d6b;
+    border-radius: 0.55rem;
+    color: #fff;
+    background: #b64d6b;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.retryButton:focus-visible {
+    outline: 3px solid rgba(239, 85, 127, 0.32);
+    outline-offset: 2px;
 }
 
 @media (max-width: 44rem) {
@@ -55,12 +94,20 @@
         left: 0;
         right: 0;
         background-color: white;
-        z-index: 5;
-        padding: 0.5rem;
+        z-index: 100;
+        height: 100vh;
+        height: 100dvh;
+        box-sizing: border-box;
+        padding: max(0.5rem, env(safe-area-inset-top)) max(0.5rem, env(safe-area-inset-right))
+            max(0.5rem, env(safe-area-inset-bottom)) max(0.5rem, env(safe-area-inset-left));
+        overflow: hidden;
     }
 
     .fullscreen .inputContainer {
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        grid-template-rows: auto minmax(0, 1fr);
+        max-height: 100%;
+        overflow: hidden;
     }
 
     .fullscreen .btnClose {
@@ -75,6 +122,14 @@
     /* when showing btnInputClear => remove the padding */
     .fullscreen .input {
         padding-right: 0;
+        font-size: 1rem;
+    }
+
+    .fullscreen .smallList,
+    .fullscreen .searchFeedback {
+        min-height: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
     }
 }
 

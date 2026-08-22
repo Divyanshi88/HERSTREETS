@@ -4,6 +4,27 @@ import { createRoot } from 'react-dom/client'
 import LandingPage from '@/landing/LandingPage'
 
 describe('LandingPage', () => {
+    it('uses separate route fields without ambiguous address autofill', () => {
+        const container = document.createElement('div')
+        const root = createRoot(container)
+        act(() => {
+            root.render(
+                <LandingPage
+                    onEnterMap={() => undefined}
+                    onShareObservation={() => undefined}
+                    onTryDemo={() => undefined}
+                    onOpenGuide={() => undefined}
+                />,
+            )
+        })
+
+        const inputs = Array.from(container.querySelectorAll('input'))
+        expect(inputs).toHaveLength(2)
+        expect(inputs.map(input => input.autocomplete)).toEqual(['off', 'off'])
+        expect(inputs.map(input => input.name)).toEqual(['starting-point', 'destination'])
+        root.unmount()
+    })
+
     it('renders the HerStreet hero content and compare routes CTA', () => {
         const container = document.createElement('div')
         document.body.appendChild(container)
