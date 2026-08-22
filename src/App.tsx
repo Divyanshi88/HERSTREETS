@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from 'react'
+import { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import ElevationInfoBar from '@/pathDetails/ElevationInfoBar'
 import styles from './App.module.css'
 import {
@@ -55,6 +55,7 @@ import LandingPage from '@/landing/LandingPage'
 import ObservationDialog from '@/observations/ObservationDialog'
 import { supabase } from '@/lib/supabase'
 import PublicReportsLayer from '@/layers/PublicReportsLayer'
+import WelcomeGuide, { hasCompletedOnboarding } from '@/onboarding/WelcomeGuide'
 
 export const POPUP_CONTAINER_ID = 'popup-container'
 export const SIDEBAR_CONTENT_ID = 'sidebar-content'
@@ -74,8 +75,24 @@ export default function App() {
     const [showObservationDialog, setShowObservationDialog] = useState(false)
     const [passwordRecovery, setPasswordRecovery] = useState(false)
     const [publicReportsRefreshKey, setPublicReportsRefreshKey] = useState(0)
+    const [demoMode, setDemoMode] = useState(false)
+    const [guideOpen, setGuideOpen] = useState(false)
 
     const map = getMap()
+
+    useEffect(() => {
+        if (!hasCompletedOnboarding()) setGuideOpen(true)
+    }, [])
+
+    const closeGuide = useCallback(() => setGuideOpen(false), [])
+    const enterDemo = useCallback(() => {
+        setDemoMode(true)
+        setShowLanding(false)
+    }, [])
+    const enterLiveMap = useCallback(() => {
+        setDemoMode(false)
+        setShowLanding(false)
+    }, [])
 
     useEffect(() => {
         const onSettingsChanged = () => setSettings(getSettingsStore().state)
@@ -159,8 +176,10 @@ export default function App() {
                 {showLanding ? (
                     <div className="landingViewport">
                         <LandingPage
-                            onEnterMap={() => setShowLanding(false)}
+                            onEnterMap={enterLiveMap}
                             onShareObservation={() => setShowObservationDialog(true)}
+                            onTryDemo={enterDemo}
+                            onOpenGuide={() => setGuideOpen(true)}
                         />
                     </div>
                 ) : (
@@ -168,7 +187,10 @@ export default function App() {
                         <button
                             type="button"
                             className={styles.returnLandingButton}
-                            onClick={() => setShowLanding(true)}
+                            onClick={() => {
+                                setDemoMode(false)
+                                setShowLanding(true)
+                            }}
                         >
                             ← Back to landing
                         </button>
@@ -179,7 +201,13 @@ export default function App() {
                             poiState={pois}
                             query={query}
                         />
-                        <PublicReportsLayer map={map} enabled={!showLanding} refreshKey={publicReportsRefreshKey} />
+                        <PublicReportsLayer
+                            map={map}
+                            enabled={!showLanding}
+                            refreshKey={publicReportsRefreshKey}
+                            demoMode={demoMode}
+                            onExitDemo={() => setDemoMode(false)}
+                        />
                         <ContextMenu map={map} route={route} queryPoints={query.queryPoints} />
                         {isSmallScreen ? (
                             <SmallScreenLayout
@@ -227,6 +255,12 @@ export default function App() {
                         setPasswordRecovery(false)
                     }}
                 />
+                {!showLanding ? (
+                    <button type="button" className={styles.guideButton} onClick={() => setGuideOpen(true)}>
+                        <span aria-hidden="true">?</span> Guide
+                    </button>
+                ) : null}
+                <WelcomeGuide open={guideOpen} onClose={closeGuide} />
             </div>
         </SettingsContext.Provider>
     )

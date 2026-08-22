@@ -12,11 +12,14 @@ import { PublicReport, ReportResponse } from '@/observations/observationTypes'
 import { focusPublicReports } from './PublicReportsFocus'
 import { filterPublicReports, getPublicReportCategoryOptions, PublicReportTimeFilter } from './PublicReportsFilters'
 import styles from './PublicReportsLayer.module.css'
+import { getDemoObservations } from '@/demo/demoObservations'
 
 interface PublicReportsLayerProps {
     map: Map
     enabled: boolean
     refreshKey: number
+    demoMode?: boolean
+    onExitDemo?: () => void
 }
 
 const markerStyle = new Style({
@@ -28,12 +31,27 @@ const markerStyle = new Style({
     zIndex: 8,
 })
 
+const demoMarkerStyle = new Style({
+    image: new CircleStyle({
+        radius: 11,
+        fill: new Fill({ color: '#fffaf7' }),
+        stroke: new Stroke({ color: '#7b3f72', width: 4 }),
+    }),
+    zIndex: 9,
+})
+
 function formatObservedAt(value: string): string {
     const date = new Date(value)
     return Number.isNaN(date.getTime()) ? 'Recently observed' : `Observed ${date.toLocaleString()}`
 }
 
-export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicReportsLayerProps) {
+export default function PublicReportsLayer({
+    map,
+    enabled,
+    refreshKey,
+    demoMode = false,
+    onExitDemo,
+}: PublicReportsLayerProps) {
     const [reports, setReports] = useState<PublicReport[]>([])
     const [selected, setSelected] = useState<PublicReport | null>(null)
     const [loadState, setLoadState] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -63,7 +81,10 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
         () =>
             new VectorLayer({
                 source: new VectorSource(),
-                style: markerStyle,
+                style: feature =>
+                    (feature.get('publicReport') as PublicReport | undefined)?.source === 'demo'
+                        ? demoMarkerStyle
+                        : markerStyle,
                 zIndex: 7,
                 properties: { name: 'HerStreet public observations' },
             }),
@@ -75,6 +96,7 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
     )
     const categoryOptions = useMemo(() => getPublicReportCategoryOptions(reports), [reports])
     const activeFilterCount = Number(Boolean(categorySlug)) + Number(Boolean(timeOfDay))
+    const [hasFocusedDemo, setHasFocusedDemo] = useState(false)
 
     useEffect(() => {
         if (!enabled) return
@@ -93,7 +115,8 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
         let active = true
         setLoadState('loading')
 
-        listPublicReports()
+        const reportPromise = demoMode ? Promise.resolve(getDemoObservations()) : listPublicReports()
+        reportPromise
             .then(publicReports => {
                 if (!active) return
                 setReports(publicReports)
@@ -112,7 +135,11 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
         return () => {
             active = false
         }
-    }, [enabled, refreshKey])
+    }, [demoMode, enabled, refreshKey])
+
+    useEffect(() => {
+        if (!demoMode) setHasFocusedDemo(false)
+    }, [demoMode])
 
     useEffect(() => {
         const source = layer.getSource()
@@ -128,6 +155,14 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
             }),
         )
     }, [filteredReports, layer])
+
+    useEffect(() => {
+        if (!demoMode || hasFocusedDemo || loadState !== 'ready' || filteredReports.length === 0) return
+        const frame = window.requestAnimationFrame(() => {
+            if (focusPublicReports(map, layer.getSource())) setHasFocusedDemo(true)
+        })
+        return () => window.cancelAnimationFrame(frame)
+    }, [demoMode, filteredReports.length, hasFocusedDemo, layer, loadState, map])
 
     useEffect(() => {
         if (selected && !filteredReports.some(report => report.id === selected.id)) setSelected(null)
@@ -153,7 +188,7 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
         let active = true
         setMyResponse(null)
         setResponseMessage('')
-        if (!selected) return
+        if (!selected || selected.source === 'demo') return
 
         getMyReportResponse(selected.id)
             .then(response => active && setMyResponse(response))
@@ -165,8 +200,8 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
     }, [selected?.id])
 
     const countLabel = activeFilterCount
-        ? `${filteredReports.length} of ${reports.length} observations`
-        : `${reports.length} community ${reports.length === 1 ? 'observation' : 'observations'}`
+        ? `${filteredReports.length} of ${reports.length} ${demoMode ? 'demo' : 'community'} observations`
+        : `${reports.length} ${demoMode ? 'demo' : 'community'} ${reports.length === 1 ? 'observation' : 'observations'}`
     const isFocusDisabled = loadState !== 'ready' || filteredReports.length === 0
     const clearFilters = () => {
         setCategorySlug('')
@@ -199,14 +234,27 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
     return (
         <Fragment>
             {createPortal(
-                <section className={styles.filterCard} aria-label="Community observation filters">
+                <section
+                    className={`${styles.filterCard} ${demoMode ? styles.demoCard : ''}`}
+                    aria-label={`${demoMode ? 'Demo' : 'Community'} observation filters`}
+                >
+                    {demoMode ? (
+                        <div className={styles.demoBanner}>
+                            <span>
+                                <strong>Demo data</strong> · fictional, not live reports
+                            </span>
+                            <button type="button" onClick={onExitDemo}>
+                                Exit demo
+                            </button>
+                        </div>
+                    ) : null}
                     <div className={styles.summaryRow}>
                         <span className={styles.motif} aria-hidden="true">
                             ✿
                         </span>
                         <span className={styles.countLabel} aria-live="polite">
                             {loadState === 'loading'
-                                ? 'Finding community observations…'
+                                ? `Finding ${demoMode ? 'demo' : 'community'} observations…`
                                 : loadState === 'error'
                                   ? 'Observations unavailable'
                                   : reports.length === 0
@@ -254,14 +302,12 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
                             </label>
                         </div>
                     ) : null}
-                    <div className={styles.footerRow}>
+                    <div className={`${styles.footerRow} ${activeFilterCount ? '' : styles.footerRowSingle}`}>
                         {activeFilterCount ? (
                             <button className={styles.clearButton} type="button" onClick={clearFilters}>
                                 Clear filters
                             </button>
-                        ) : (
-                            <span />
-                        )}
+                        ) : null}
                         <button
                             className={styles.focusButton}
                             type="button"
@@ -292,6 +338,9 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
                         </button>
                         <p className={styles.kicker}>{selected.categoryName}</p>
                         <h3>{selected.observationName}</h3>
+                        {selected.source === 'demo' ? (
+                            <p className={styles.demoNotice}>Demo data — fictional, not a live report</p>
+                        ) : null}
                         {selected.publicLocationLabel ? (
                             <p className={styles.location}>{selected.publicLocationLabel}</p>
                         ) : null}
@@ -300,26 +349,28 @@ export default function PublicReportsLayer({ map, enabled, refreshKey }: PublicR
                             {formatObservedAt(selected.observedAt)} · {selected.confirmationCount} confirmations ·{' '}
                             {selected.disagreementCount} changed
                         </p>
-                        <div className={styles.responseActions} aria-label="Respond to this observation">
-                            <button
-                                className={myResponse === 'confirmed' ? styles.responseActive : undefined}
-                                type="button"
-                                onClick={() => saveResponse('confirmed')}
-                                disabled={responseState === 'saving'}
-                                aria-pressed={myResponse === 'confirmed'}
-                            >
-                                I also observed this
-                            </button>
-                            <button
-                                className={myResponse === 'changed' ? styles.responseActive : undefined}
-                                type="button"
-                                onClick={() => saveResponse('changed')}
-                                disabled={responseState === 'saving'}
-                                aria-pressed={myResponse === 'changed'}
-                            >
-                                Conditions changed
-                            </button>
-                        </div>
+                        {selected.source === 'community' ? (
+                            <div className={styles.responseActions} aria-label="Respond to this observation">
+                                <button
+                                    className={myResponse === 'confirmed' ? styles.responseActive : undefined}
+                                    type="button"
+                                    onClick={() => saveResponse('confirmed')}
+                                    disabled={responseState === 'saving'}
+                                    aria-pressed={myResponse === 'confirmed'}
+                                >
+                                    I also observed this
+                                </button>
+                                <button
+                                    className={myResponse === 'changed' ? styles.responseActive : undefined}
+                                    type="button"
+                                    onClick={() => saveResponse('changed')}
+                                    disabled={responseState === 'saving'}
+                                    aria-pressed={myResponse === 'changed'}
+                                >
+                                    Conditions changed
+                                </button>
+                            </div>
+                        ) : null}
                         {responseMessage ? (
                             <p className={styles.responseMessage} role="status">
                                 {responseMessage}

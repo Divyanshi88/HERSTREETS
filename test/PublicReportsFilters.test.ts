@@ -2,6 +2,7 @@ import { filterPublicReports, getPublicReportCategoryOptions } from '@/layers/Pu
 import { PublicReport } from '@/observations/observationTypes'
 
 const makeReport = (id: string, categorySlug: string, categoryName: string, timeOfDay: string): PublicReport => ({
+    source: 'community',
     id,
     categoryId: `${categorySlug}-id`,
     categorySlug,

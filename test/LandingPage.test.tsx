@@ -10,7 +10,14 @@ describe('LandingPage', () => {
         const root = createRoot(container)
 
         act(() => {
-            root.render(<LandingPage onEnterMap={() => undefined} onShareObservation={() => undefined} />)
+            root.render(
+                <LandingPage
+                    onEnterMap={() => undefined}
+                    onShareObservation={() => undefined}
+                    onTryDemo={() => undefined}
+                    onOpenGuide={() => undefined}
+                />,
+            )
         })
 
         expect(container.textContent).toContain('A MORE THOUGHTFUL WAY HOME')
@@ -30,7 +37,14 @@ describe('LandingPage', () => {
         const root = createRoot(container)
 
         act(() => {
-            root.render(<LandingPage onEnterMap={() => undefined} onShareObservation={() => undefined} />)
+            root.render(
+                <LandingPage
+                    onEnterMap={() => undefined}
+                    onShareObservation={() => undefined}
+                    onTryDemo={() => undefined}
+                    onOpenGuide={() => undefined}
+                />,
+            )
         })
 
         const form = container.querySelector('form')
@@ -55,7 +69,14 @@ describe('LandingPage', () => {
         const root = createRoot(container)
 
         act(() => {
-            root.render(<LandingPage onEnterMap={() => undefined} onShareObservation={onShareObservation} />)
+            root.render(
+                <LandingPage
+                    onEnterMap={() => undefined}
+                    onShareObservation={onShareObservation}
+                    onTryDemo={() => undefined}
+                    onOpenGuide={() => undefined}
+                />,
+            )
         })
 
         const button = Array.from(container.querySelectorAll('button')).find(item =>
@@ -64,6 +85,33 @@ describe('LandingPage', () => {
         act(() => button?.click())
 
         expect(onShareObservation).toHaveBeenCalledTimes(1)
+        root.unmount()
+        container.remove()
+    })
+
+    it('starts the fictional demo from the primary demo action', () => {
+        const onTryDemo = jest.fn()
+        const container = document.createElement('div')
+        document.body.appendChild(container)
+        const root = createRoot(container)
+
+        act(() => {
+            root.render(
+                <LandingPage
+                    onEnterMap={() => undefined}
+                    onShareObservation={() => undefined}
+                    onTryDemo={onTryDemo}
+                    onOpenGuide={() => undefined}
+                />,
+            )
+        })
+
+        const button = Array.from(container.querySelectorAll('button')).find(item =>
+            item.textContent?.includes('Try the demo'),
+        )
+        act(() => button?.click())
+
+        expect(onTryDemo).toHaveBeenCalledTimes(1)
         root.unmount()
         container.remove()
     })

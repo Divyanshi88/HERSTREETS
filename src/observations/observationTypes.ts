@@ -24,6 +24,7 @@ export interface NewReport {
 }
 
 export interface PublicReport {
+    source: 'community' | 'demo'
     id: string
     categoryId: string
     categorySlug: string

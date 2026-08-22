@@ -9,9 +9,11 @@ import styles from './LandingPage.module.css'
 interface LandingPageProps {
     onEnterMap: () => void
     onShareObservation: () => void
+    onTryDemo: () => void
+    onOpenGuide: () => void
 }
 
-export default function LandingPage({ onEnterMap, onShareObservation }: LandingPageProps) {
+export default function LandingPage({ onEnterMap, onShareObservation, onTryDemo, onOpenGuide }: LandingPageProps) {
     const [start, setStart] = useState('')
     const [destination, setDestination] = useState('')
     const [error, setError] = useState('')
@@ -84,13 +86,7 @@ export default function LandingPage({ onEnterMap, onShareObservation }: LandingP
                         <button type="button" className={styles.navButton} onClick={onEnterMap}>
                             Explore
                         </button>
-                        <button
-                            type="button"
-                            className={styles.navButton}
-                            onClick={() =>
-                                document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
-                            }
-                        >
+                        <button type="button" className={styles.navButton} onClick={onOpenGuide}>
                             How it works
                         </button>
                         <button
@@ -149,6 +145,10 @@ export default function LandingPage({ onEnterMap, onShareObservation }: LandingP
                             </label>
                             <button className={styles.compareButton} type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? 'Comparing routes…' : 'Compare routes ✦'}
+                            </button>
+                            <button className={styles.demoButton} type="button" onClick={onTryDemo}>
+                                <span aria-hidden="true">✦</span> Try the demo
+                                <small>Explore 18 fictional observations</small>
                             </button>
                             {error ? (
                                 <p className={styles.errorText} role="alert">

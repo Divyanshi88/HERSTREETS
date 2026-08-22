@@ -134,6 +134,46 @@
     font: inherit;
 }
 
+.demoCard {
+    border-color: #8f5a88;
+}
+.demoBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.5rem 0.7rem;
+    background: #f1e7f2;
+    color: #4c2340;
+    font-size: 0.68rem;
+    line-height: 1.25;
+}
+.observationControl .demoBanner button {
+    box-sizing: border-box;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 44px;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid #805078;
+    border-radius: 0.45rem;
+    background: #fffaf7;
+    color: #5d3157;
+    white-space: nowrap;
+    cursor: pointer;
+    font: 700 0.68rem inherit;
+}
+.demoNotice {
+    margin: 0.55rem 0 0;
+    padding: 0.45rem 0.55rem;
+    border-left: 3px solid #805078;
+    background: #f1e7f2;
+    color: #5d3157;
+    font-size: 0.7rem;
+    font-weight: 800;
+    line-height: 1.35;
+}
+
 .summaryRow {
     display: flex;
     align-items: center;
@@ -241,6 +281,11 @@
     padding: 0.5rem 0.7rem;
 }
 
+.footerRowSingle {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: end;
+}
+
 .clearButton,
 .focusButton {
     margin: 0;
@@ -305,6 +350,30 @@
         max-width: 100%;
     }
 
+    .demoBanner {
+        box-sizing: border-box;
+        min-height: 44px;
+        padding: 0.25rem 4rem 0.25rem 0.6rem;
+        font-size: 0.64rem;
+    }
+
+    .observationControl .demoBanner button {
+        flex: 0 0 auto;
+        padding: 0.25rem 0.45rem;
+    }
+
+    .demoCard .summaryRow {
+        padding-top: 0.35rem;
+        padding-bottom: 0.3rem;
+    }
+
+    .demoCard .footerRow {
+        min-height: 44px;
+        padding: 0.2rem 0.55rem;
+        border-top: 1px solid #f2ccd7;
+        background: #fffaf7;
+    }
+
     .filterCard:has(.filterFields) {
         max-height: 45vh;
         overflow-x: hidden;
@@ -334,6 +403,10 @@
 
     .footerRow {
         grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+    }
+
+    .footerRowSingle {
+        grid-template-columns: minmax(0, 1fr);
     }
 
     .observationControl .clearButton,

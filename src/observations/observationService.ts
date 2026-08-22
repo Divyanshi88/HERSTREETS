@@ -133,6 +133,7 @@ export async function listPublicReports(): Promise<PublicReport[]> {
     if (error) throw new Error(`Unable to load public reports: ${error.message}`)
 
     return ((data ?? []) as PublicReportRow[]).map(row => ({
+        source: 'community',
         id: row.id,
         categoryId: row.category_id,
         categorySlug: row.category_slug,

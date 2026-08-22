@@ -8,6 +8,40 @@
     user-select: none; /* firefox does not ignore -webkit-user-select so make this explicit, see #217 */
 }
 
+.guideButton {
+    position: fixed;
+    z-index: 20;
+    right: 0.75rem;
+    top: 0.75rem;
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid #e8a4b8;
+    border-radius: 0.7rem;
+    background: #fffaf7;
+    box-shadow: 0 0.35rem 1rem rgba(61, 24, 40, 0.14);
+    color: #4c2340;
+    cursor: pointer;
+    font:
+        700 0.78rem 'Inter',
+        sans-serif;
+}
+
+.guideButton span {
+    display: inline-grid;
+    width: 1.3rem;
+    height: 1.3rem;
+    place-items: center;
+    margin-right: 0.2rem;
+    border-radius: 50%;
+    background: #ef547c;
+    color: #fff;
+}
+.guideButton:focus-visible {
+    outline: 3px solid rgba(239, 84, 124, 0.38);
+    outline-offset: 2px;
+}
+
 .landingMode {
     display: block;
     min-height: 100%;
